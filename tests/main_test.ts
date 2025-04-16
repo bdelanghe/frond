@@ -81,6 +81,20 @@ Deno.test("Complex TS fixture should be idempotent via saved AST", async (t) => 
   await Deno.remove(astJsonPath2).catch(() => {});
 });
 
+Deno.test("Print from saved simple.ast.json fixture matches expected formatted output", async () => {
+  const fixtureAstPath = "./tests/fixtures/simple.ast.json";
+  const expectedFormattedPath = "./tests/fixtures/simple.formatted.ts";
+
+  const regeneratedSource = await printFromAstJson(fixtureAstPath);
+  const expectedSource = await Deno.readTextFile(expectedFormattedPath);
+
+  assertEquals(
+    regeneratedSource,
+    expectedSource,
+    "Printing from the saved AST fixture should match the pre-formatted fixture file.",
+  );
+});
+
 // // Run cleanup after all tests (alternative to signal listener)
 // // Note: This might not run if tests exit prematurely.
 // globalThis.addEventListener("unload", async () => {
